@@ -4,52 +4,101 @@
 var mainApp = angular.module("mainApp", []);
 
 /*
-	The controller of div element ng-controller="rowCon" in html file is created....
+	The controller of div element ng-controller="rowCon" in html file is created
 */
-mainApp.controller("rowCon", function($scope) {
 
-/*rows and colm are arrays that keeps row no and column no respectively*/
-	$scope.rows=[];
-	$scope.colm = [];
-	$scope.no_colm = 0;//no of columns
 
-	var img_height =  320;// fixed height of one image.
-	/*Capturing screen Height and adding offset for smooth scrolling*/
-	var screenHeight = window.innerHeight + 640;
-	var screenWidth  = window.innerWidth;
-	/*Calculating no of images to display*/
-	no_rows=parseInt(screenHeight/img_height);
-	var prev = no_rows+1;
-	for(var i=1;i<=no_rows;i++){
-				$scope.rows[i-1]=i;
-			}
+mainApp.controller("rowCon", function($scope,$http) {
+	$scope.imgs=[];
+	$scope.message="";
+	var IMG_HEIGHT=160;
+	var IMG_WIDTH=160;
+	var areaOfImgs=function(){
+		return 160*160;
+	};
+	$scope.getTimes=function(n){
+		var myarray=[];
+		for(var i=0;i<n;i++)
+			myarray.push(i);
+		return myarray;
+	};
+  var getimg=function(callback){
+    $http({
+      headers:  {
+              'Authorization': 'Client-ID 2caa3460222960b'
+            },
+      method: 'GET',
+      url: 'https://api.imgur.com/3/gallery/hot/'
+    }).then(function successCallback(response) {
+      appendData(response.data.data,callback);
+			callback();
+      }, function errorCallback(response) {
+        console.log("error");
+      });
+  };
+  id='qBwa4';
+  var getAlbumImg = function(id,callback){
+    $http({
+      headers:  {
+              'Authorization': 'Client-ID 2caa3460222960b'
+            },
+      method: 'GET',
+      url: 'https://api.imgur.com/3/gallery/album/'+id
+    }).then(function successCallback(response) {
+      parseAlbum(response.data.data.images);
+			callback();
+      }, function errorCallback(response) {
+        console.log("error");
+      });
+  };
+  var generateList=function(callback){
+    getimg(callback);
+  };
+  var appendData=function(imgArray,callback){
+    imgArray.forEach(function(s){
+      if(s.is_album){
+        getAlbumImg(s.id,callback);
+      }
+      else{
+				s.link=s.link.substring(0, s.link.lastIndexOf('.')) + "t" + s.link.substring(s.link.lastIndexOf('.'), s.link.length);
+        $scope.imgs.push(s.link);
+      }
+    });
+  };
+  var parseAlbum=function(albumData){
+    albumData.forEach(function(t){
+			t.link=t.link.substring(0, t.link.lastIndexOf('.')) + "t" + t.link.substring(t.link.lastIndexOf('.'), t.link.length);
+      $scope.imgs.push(t.link);
+    });
+  };
+	var calc_screen_init=function(max_images){
+		var no_img=(window.innerHeight*window.innerWidth)/(areaOfImgs())+5;
+		if(no_img>max_images)
+			$scope.n=max_images;
+		else
+			$scope.n=no_img;
+	};
 
-	if(screenWidth > 991){//then 3 images per row
-		$scope.colm = [1,2,3];
-		$scope.no_colm = 3;
-	}
-	else if (screenWidth > 768){//then 2 images per row
-		$scope.colm = [1,2];
-		$scope.no_colm = 2;
-	}
-	else{
-		$scope.colm = [1];// if small screen then 1 image per row
-		$scope.no_colm = 1;
-	}
-
-	MAX_IMAGES=28 //no of images in ./images directory
-
-	/*detecting Scrolling and binding it to controller $digest() angularJs function*/
-	window.addEventListener('scroll',function(){
-			var totalHeight = screenHeight + window.pageYOffset ;
-			no_rows=parseInt(totalHeight/img_height);
-
-			/* calculating rows */
-			for(var i=prev;i<=no_rows&&i<MAX_IMAGES/$scope.no_colm;i++){
-				$scope.rows.push(i);
-			}
-			prev = no_rows+1;
-			$scope.$digest();
-		});
+ 	generateList(function(){
+		MAX_IMG=$scope.imgs.length;
+		calc_screen_init(MAX_IMG);
 	});
-	
+
+	var prevOffset=0;
+
+	window.addEventListener('scroll',function(){
+		if(window.pageYOffset>prevOffset){
+			var nArea=window.pageYOffset*window.innerWidth;
+			var x=nArea/areaOfImgs();
+			if(($scope.n+x)<MAX_IMG)
+				$scope.n+=x;
+			else{
+				$scope.n=MAX_IMG;
+				$scope.message="END OF IMAGES";
+			}
+			console.log($scope.n);
+			prevOffset=window.pageYOffset;
+			$scope.$digest();
+		}
+	});
+});

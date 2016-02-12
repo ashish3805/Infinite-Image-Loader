@@ -3,6 +3,7 @@
 
 #container{
 	color:#3BE3FF;
+	max-width:1366px;
 }
 
 .imgrow{
@@ -11,10 +12,9 @@
 
 .img_con{
 	color:#FD181B;
-	height:320px;
-	padding-top: 20px;
-	padding-bottom: 20px;
-	overflow:hidden;
+	height:160px;
+	width:160px;
+	margin:5px;
 }
 
 span{

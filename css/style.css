@@ -1,7 +1,7 @@
 @charset "utf-8";
 /* CSS Document */
 #mainApp{
-	height: 700px;
+	height: 600px;
 	width: 1024px;
 	overflow: auto scroll;
 	overflow-y: scroll;

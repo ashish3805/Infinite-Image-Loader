@@ -6,5 +6,3 @@ as of now it pulls images from imgur(the latest trending images);
 
 mainApp container can be styled at ./css/style.css;
 js code can be seen at ./js/app.js;
-
-Documentation coming soon!

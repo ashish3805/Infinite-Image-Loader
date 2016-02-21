@@ -136,7 +136,8 @@ var screenInit=function(){
 };
 
 var putImg=function(url){
-  document.getElementById("mainApp").innerHTML +='<img src="'+url+'" height="'+config.imgWidth+'" width="'+config.imgHeight+'">';
+  document.getElementById("mainApp").innerHTML +='<img src="'+url+'" height="'+
+	config.imgWidth+'" width="'+config.imgHeight+'" class="img_holder">';
 };
 /*
 displays images. and check for End through 'checkEnd'.

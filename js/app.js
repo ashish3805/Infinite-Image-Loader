@@ -68,6 +68,7 @@ function getImgList(config, callback) {
 			if (request.readyState === 4 && request.status === 200) {
 						cbArray['cb'+cbId].status=true;//requst has ended
             var data=JSON.parse(request.responseText);
+            console.log(data);
             for(x of data.data){
                 if(!x.is_album){
 									++stock;
@@ -76,9 +77,10 @@ function getImgList(config, callback) {
                 else{
 									//if given link is of album not image then get details of album and then get all its image
                   getAlbumImg(x.id,function(album_data){
-											stock+=album_data.data.images_count;
-                      for(img of album_data.data.images)
-                      imgs.push(getThumb(img.link));
+											stock+=album_data.data.images.length;
+                      for(img of album_data.data.images){
+                          imgs.push(getThumb(img.link));
+                      }
                       callback();
                   });
                 }
@@ -103,7 +105,7 @@ var checkEnd=function(){
 	if(fl&&(stock==used_no)&&(!end)){
 		end=true;
 		document.getElementById("mainApp").innerHTML +=
-		'<div id="appEnd"><p>End Of Images</p></div>';
+		'<br><div id="appEnd"><p>End Of Images</p></div>';
 	}
 }
 /*
@@ -131,13 +133,13 @@ var screenInit=function(){
   var elem = document.getElementById("mainApp");
   var h=parseInt(window.getComputedStyle(elem,null).getPropertyValue("height"));
   var w=parseInt(window.getComputedStyle(elem,null).getPropertyValue("width"));
-  req_no=(h*w)/(config.imgHeight*config.imgWidth)+10;
+  req_no=(h*w)/(config.imgHeight*config.imgWidth)+1;
   document.getElementById("mainApp").setAttribute("onscroll","addScreen()");
 };
 
-var putImg=function(url){
+var putImg=function(url,n){
   document.getElementById("mainApp").innerHTML +='<img src="'+url+'" height="'+
-	config.imgWidth+'" width="'+config.imgHeight+'" class="img_holder">';
+	config.imgWidth+'" width="'+config.imgHeight+'" class="img_holder" id="img'+n+'">';
 };
 /*
 displays images. and check for End through 'checkEnd'.
@@ -147,7 +149,7 @@ var dispImg=function(){
   for(var i=used_no;i<req_no;i++){
     if(i<imgs.length){
       ++used_no;
-      putImg(imgs[i]);
+      putImg(imgs[i],used_no);
     }
   };
 	checkEnd();

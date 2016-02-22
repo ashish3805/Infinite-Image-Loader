@@ -1,14 +1,19 @@
 @charset "utf-8";
 /* CSS Document */
 #mainApp{
-	height: 600px;
-	width: 1024px;
 	overflow: auto scroll;
+	height: 700px;
+	max-width: 1024px;
 	overflow-y: scroll;
+	background: gray;
 }
 #appEnd{
 	font-weight: bold;
 	color:red;
 	size:36px;
 	display:inline-block;
+}
+
+.img_holder{
+	border: 5px solid #FF1111;
 }

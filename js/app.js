@@ -11,8 +11,8 @@ var end=false;
 var config={
 	'Authorization': 'Client-ID 2caa3460222960b',
 		'url': 'https://api.imgur.com/3/gallery/hot/',
-    'imgWidth':160,
-    'imgHeight':160
+    'imgWidth':100,
+    'imgHeight':100
 };
 /*
 start of imgur specific functions
@@ -71,15 +71,21 @@ function getImgList(config, callback) {
             console.log(data);
             for(x of data.data){
                 if(!x.is_album){
-									++stock;
-                  imgs.push(getThumb(x.link));//append the imgs array with url of thumbnail
+									var img={};
+									img.url=getThumb(x.link);
+									img.height=160;
+									img.width=160;
+									imgs.push(img);
                 }
                 else{
 									//if given link is of album not image then get details of album and then get all its image
                   getAlbumImg(x.id,function(album_data){
-											stock+=album_data.data.images.length;
-                      for(img of album_data.data.images){
-                          imgs.push(getThumb(img.link));
+                      for(imgData of album_data.data.images){
+													var img={};
+													img.url=getThumb(imgData.link);
+													img.height=160;
+													img.width=160;
+                          imgs.push(img);
                       }
                       callback();
                   });
@@ -116,15 +122,48 @@ End of imgur Specific functions
 addScreen function is fired on Event of scrolling. it calculates how many new images are to be inserted.
 */
 var addScreen=function(){
+	console.log("Scrolled");
   var elem = document.getElementById("mainApp");
   var w=parseInt(window.getComputedStyle(elem,null).getPropertyValue("width"));
-  var imgDiv=document.getElementById("mainApp");
-  if(imgDiv.scrollTop>prevScroll){
-    req_no+=((imgDiv.scrollTop-prevScroll)*w)/(config.imgWidth*config.imgHeight);
-    prevScroll=imgDiv.scrollTop;
+  if(window.pageYOffset>prevScroll){
+    req_no+=((window.pageYOffset-prevScroll)*w)/(config.imgWidth*config.imgHeight);
+    prevScroll=window.pageYOffset;
     dispImg();
   }
 };
+
+
+var putImg=function(img,n){
+  var loadingImg=new Image();
+  loadingImg.src=img.url;
+	console.log("loading: img"+n);
+	loadingImg.onload = function(){
+		console.log("loaded: img"+n);
+		document.getElementById("img"+n).setAttribute("src",this.src);
+		document.getElementById("img"+n).setAttribute("height",img.height);
+		document.getElementById("img"+n).setAttribute("width",img.width);
+	};
+};
+/*
+displays images. and check for End through 'checkEnd'.
+checkEnd function is source specific and must be provided as per source.
+*/
+
+var dispImg=function(){
+  for(var i=used_no;i<req_no;i++){
+    if(i<stock){
+      putImg(imgs[i],used_no);
+			++used_no;
+    }
+  };
+	checkEnd();
+};
+/* This function can be modified to get the no of images from database and then stock can be set*/
+var setStock=function(callback){
+	stock=200;
+	callback();
+};
+
 /*
 Intialises req_no i.e. no of images initially required for screen by taking width and height of conatiner 'mainApp'.
 sets the event onscroll on mainApp
@@ -135,25 +174,13 @@ var screenInit=function(){
   var w=parseInt(window.getComputedStyle(elem,null).getPropertyValue("width"));
   req_no=(h*w)/(config.imgHeight*config.imgWidth)+1;
   document.getElementById("mainApp").setAttribute("onscroll","addScreen()");
+	setStock(function(){
+		for(var i=0;i<stock;i++){
+			document.getElementById("mainApp").innerHTML +='<a><img src="" height="'+
+			config.imgWidth+'" width="'+config.imgHeight+'" class="img_holder" id="img'+i+'"></a>';
+		}
+		getImgList(config,dispImg); //this method gets the metadata [height,width and url]
+	});
 };
-
-var putImg=function(url,n){
-  document.getElementById("mainApp").innerHTML +='<img src="'+url+'" height="'+
-	config.imgWidth+'" width="'+config.imgHeight+'" class="img_holder" id="img'+n+'">';
-};
-/*
-displays images. and check for End through 'checkEnd'.
-checkEnd function is source specific and must be provided as per source.
-*/
-var dispImg=function(){
-  for(var i=used_no;i<req_no;i++){
-    if(i<imgs.length){
-      ++used_no;
-      putImg(imgs[i],used_no);
-    }
-  };
-	checkEnd();
-};
-
 screenInit();
-getImgList(config,dispImg);//get list of images from imgur,dispImg is callback
+//get list of images from imgur,dispImg is callback

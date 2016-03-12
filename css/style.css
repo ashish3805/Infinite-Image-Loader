@@ -5,7 +5,6 @@
 	height: 700px;
 	max-width: 1024px;
 	overflow-y: scroll;
-	background: gray;
 }
 #appEnd{
 	font-weight: bold;
@@ -15,9 +14,17 @@
 }
 
 .img_holder{
-	border: 5px solid #FF1111;
+	padding: 5px;
+	border: solid 1px #EFEFEF;
+  background: url(loading.gif) 50% no-repeat;
 }
 
+a:hover img.img_holder {
+	border: solid 1px #CCC;
+	-moz-box-shadow: 1px 1px 5px #999;
+	-webkit-box-shadow: 1px 1px 5px #999;
+	box-shadow: 1px 1px 5px #999;
+}
 /* source: http://tobiasahlin.com/spinkit/ */
 .sk-circle {
   margin: 100px auto;
@@ -142,15 +149,3 @@
 }
 
 /* http://www.cvwdesign.com/blog/css3-box-shadow-and-image-hover-effects*/
-
-.imagedropshadow {
-	padding: 5px;
-	border: solid 1px #EFEFEF;
-}
-
-a:hover img.imagedropshadow {
-	border: solid 1px #CCC;
-	-moz-box-shadow: 1px 1px 5px #999;
-	-webkit-box-shadow: 1px 1px 5px #999;
-	box-shadow: 1px 1px 5px #999;
-}

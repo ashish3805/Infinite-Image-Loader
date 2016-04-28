@@ -1,29 +1,33 @@
 @charset "utf-8";
 /* CSS Document */
+
+#Loader{
+  height: 600px;
+  background: url(loading.gif) 50% no-repeat;
+}
+
 #mainApp{
-	overflow: auto scroll;
-	height: 700px;
-	max-width: 1024px;
-	overflow-y: scroll;
+  height: 700px;
+  overflow-y: scroll;
 }
 #appEnd{
-	font-weight: bold;
-	color:red;
-	size:36px;
-	display:inline-block;
+  font-weight: bold;
+  color:red;
+  size:36px;
+  display:inline-block;
 }
 
 .img_holder{
-	padding: 5px;
-	border: solid 1px #EFEFEF;
+  padding: 5px;
+  border: solid 1px #EFEFEF;
   background: url(loading.gif) 50% no-repeat;
 }
 
 a:hover img.img_holder {
-	border: solid 1px #CCC;
-	-moz-box-shadow: 1px 1px 5px #999;
-	-webkit-box-shadow: 1px 1px 5px #999;
-	box-shadow: 1px 1px 5px #999;
+  border: solid 1px #CCC;
+  -moz-box-shadow: 1px 1px 5px #999;
+  -webkit-box-shadow: 1px 1px 5px #999;
+  box-shadow: 1px 1px 5px #999;
 }
 /* source: http://tobiasahlin.com/spinkit/ */
 .sk-circle {

@@ -1,7 +1,7 @@
 # Infinite-Image-Loader
 
 This module is written in pure javascript with traditional DOM constructs. hence it has no dependencies.
-The module creates an Infinte Scrollable Image loader that loads images on demand i.e. when useer scolls more.
+The module creates an Infintely Scrollable Image Loader that loads images on demand i.e. when user scrolls down.
 
 to create a infinite image container Just put div's id="mainApp" for ex: see index.html
 as of now it pulls images from imgur(the latest trending images);
